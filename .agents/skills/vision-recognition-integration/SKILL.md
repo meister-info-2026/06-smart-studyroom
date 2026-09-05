@@ -14,13 +14,13 @@ Windows 기본 경로 길이 제한(260자)과 최신 NumPy 2.x·PyTorch 바이�
 실패할 수 있다. 아래처럼 버전을 고정해서 설치한다.
 ```powershell
 cd vision
-python -m venv venv
+py -3.12 -m venv venv
 .\venv\Scripts\Activate.ps1
-# 1. 경로 에러가 없는 경량 CPU PyTorch 설치
-pip install torch==2.2.2+cpu torchvision==0.17.2+cpu --extra-index-url https://download.pytorch.org/whl/cpu
-# 2. 호환 패키지 설치
-pip install "numpy<2" opencv-python==4.9.0.80 ultralytics requests python-dotenv
+$env:PYTHONUTF8=1
+pip install -r requirements.txt
 ```
+> ⚠️ **Python 3.14 DLL 충돌 방지**: Windows 환경에서는 Python 3.14의 PyTorch 휠 부재 및 DLL 에러(`[WinError 1114]`)를 방지하기 위해 반드시 `py -3.12`로 가상환경을 생성합니다.
+> ⚠️ **얼굴인식 라이브러리 주의**: C++ 빌드 에러를 유발하는 `dlib`/`face_recognition` 대신 `onnxruntime`(ArcFace ONNX) 및 OpenCV DNN을 사용합니다.
 그래도 경로 에러가 나면 관리자 권한 PowerShell에서 Windows 긴 경로 제한을 아예
 해제한다(FAQ 참고):
 ```powershell
