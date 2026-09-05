@@ -281,7 +281,8 @@ class VisionStudySeatClient:
                     if persons:
                         # 가장 큰 사람 바운딩 박스 선택
                         main_person = max(persons, key=lambda p: (p[2] - p[0]) * (p[3] - p[1]))
-                        x1, y1, x2, y2, conf = map(int, main_person[:4]) + [main_person[4]]
+                        x1, y1, x2, y2 = map(int, main_person[:4])
+                        conf = float(main_person[4])
                         head_y = float(y1)
 
                         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 220, 100), 2)
