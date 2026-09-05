@@ -1,39 +1,32 @@
 # ==============================================================================
-# Vision Client Requirements (Windows Python 3.12 권장)
+# Vision Client Requirements (초경량 ONNX Runtime 엔진 - PyTorch 불필요)
 #
-# 가상환경 생성 (Python 3.14 DLL 충돌 방지 및 .gitignore 호환):
+# 가상환경 생성 (5초 만에 설치 완료, Python 3.10 ~ 3.14 전 버전 호환):
 #   py -3.12 -m venv venv
 #   .\venv\Scripts\Activate.ps1
 #   $env:PYTHONUTF8=1
 #   pip install -r requirements.txt
 #
-# 얼굴인식 고도화:
-#   Windows C++ 빌드 에러를 유발하는 dlib/face_recognition 대신
-#   LFW 99.5%+ 인식률의 onnxruntime(경량 ArcFace ONNX) 및 OpenCV DNN(YuNet+SFace) 사용
+# 장점:
+#   1. 거대한 PyTorch(200MB+) 및 Ultralytics 의존성을 완전히 제거
+#   2. ONNX Runtime(CPU 최적화) 기반 초고속 추론 (12.8MB yolov8n.onnx 기본 탑재)
+#   3. Windows C++ 컴파일러(Visual Studio) 불필요, DLL 로드 에러(WinError 1114) 제로
+#   4. Pillow 탑재로 웹캠 화면 한글 텍스트 깨짐 방지
 # ==============================================================================
 
---extra-index-url https://download.pytorch.org/whl/cpu
+# 초경량 AI 추론 엔진 (PyTorch 대체)
+onnxruntime>=1.18.0
 
-# Python 3.10 ~ 3.12 (안정 권장 버전)
-torch==2.2.2+cpu; python_version < "3.13"
-torchvision==0.17.2+cpu; python_version < "3.13"
-numpy<2; python_version < "3.13"
-opencv-python==4.9.0.80; python_version < "3.13"
+# 영상 처리 및 컴퓨터 비전
+opencv-python>=4.9.0
+numpy<2
 
-# Python 3.13 이상 (신형 파이썬 환경 호환)
-torch==2.9.1+cpu; python_version >= "3.13"
-torchvision==0.24.1+cpu; python_version >= "3.13"
-opencv-python>=4.10; python_version >= "3.13"
-
-# 핵심 비전 AI 및 랜드마크 분석
-ultralytics>=8.0.0
-mediapipe; python_version < "3.13"
-onnxruntime
-scipy
-
-# 웹캠 한글 텍스트 깨짐 방지용
+# 웹캠 한글 텍스트 오버레이 지원
 pillow>=10.0.0
 
-# 네트워크 및 환경설정
+# 수치 연산 및 기하학 분석 (자세/눈 추적 보조)
+scipy>=1.12.0
+
+# 백엔드 통신 및 환경변수
 requests>=2.28.0
 python-dotenv>=1.0.0

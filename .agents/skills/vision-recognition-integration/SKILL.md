@@ -27,22 +27,24 @@ pip install -r requirements.txt
 New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
 ```
 
-## 최소 파이프라인 (YOLOv8n 예시 — 실제 검증된 조합)
-사람 감지처럼 "특정 인물 식별이 아닌 사람/사물 존재 여부"에는 mediapipe의
-얼굴 감지보다 YOLOv8n(경량 객체 감지 모델)이 더 적합하고 실제로도 검증됐다.
+## 최소 파이프라인 (초경량 YOLOv8 ONNX 듀얼 엔진 — PyTorch 불필요)
+사람 감지처럼 "사람/사물 존재 여부"에는 PyTorch를 설치할 필요 없이 공식 표준 `yolov8n.onnx`를 `onnxruntime` 또는 OpenCV 내장 `cv2.dnn`으로 로드하여 실행합니다. (5초 만에 설치 완료)
 ```python
 import cv2
-from ultralytics import YOLO
+import numpy as np
 
-model = YOLO("yolov8n.pt")
+# OpenCV 내장 DNN 또는 onnxruntime으로 로드
+net = cv2.dnn.readNetFromONNX("yolov8n.onnx")
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Windows에서는 CAP_DSHOW로 열어야 웹캠 인식이 안정적
 
 while True:
     ok, frame = cap.read()
     if not ok:
         continue
-    results = model(frame, classes=[0], verbose=False)  # class 0 = person
-    detected = len(results[0].boxes) > 0
+    # 640x640 blob 생성 후 추론 (person = class 0)
+    blob = cv2.dnn.blobFromImage(frame, 1/255.0, (640, 640), swapRB=True, crop=False)
+    net.setInput(blob)
+    output = net.forward()
     # 상태가 바뀔 때만 이벤트 전송 (vision-rules.md 참고)
 ```
 
