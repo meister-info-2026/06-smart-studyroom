@@ -44,13 +44,23 @@ led.off()  # 끄기
 ```
 
 ## 라즈베리파이 5 패키지 설치 (Pi 5 전용 주의)
-라즈베리파이 5는 GPIO 칩이 이전 모델과 달라(RP1), 예전 방식(`RPi.GPIO`)이 아니라
-`lgpio` 핀 팩토리가 필요하다. `gpiozero`만 설치하면 핀 제어가 실패할 수 있다.
+1. **RP1 칩셋 구조 특성**: 라즈베리파이 5는 자체 I/O 제어 칩(RP1)이 적용되어 기존 `RPi.GPIO`가 동작하지 않으며 `gpiozero`와 `lgpio` 라이브러리가 필수입니다.
+2. **pip 빌드 오류 해결**: PyPI에서 `pip install lgpio` 시 C 소스 컴파일 에러가 발생하므로, 라즈베리파이 OS 기본 APT 패키지(`python3-gpiozero`, `python3-lgpio`)를 사용하도록 표준화합니다.
+3. **가상환경 연동 옵션 적용**: `python3 -m venv --system-site-packages venv`로 가상환경을 생성하여 시스템에 설치된 lgpio/gpiozero를 venv 내부에서 그대로 재사용합니다.
+
 ```bash
 cd pi
-python3 -m venv venv
+
+# 1) 시스템 기본 패키지 설치 (컴파일 에러 방지)
+sudo apt update
+sudo apt install -y python3-gpiozero python3-lgpio
+
+# 2) 시스템 패키지를 재사용하는 가상환경 생성 및 활성화
+python3 -m venv --system-site-packages venv
 source venv/bin/activate
-pip install gpiozero lgpio requests python-dotenv
+
+# 3) 추가 파이썬 패키지 설치
+pip install requests python-dotenv
 ```
 
 ## desired-state 폴링 패턴

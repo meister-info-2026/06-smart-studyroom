@@ -7,7 +7,7 @@
 4. 실기기 첫 연결은 교사 입회 하에 진행한다
 
 ## 소프트웨어 설계
-- `gpiozero` 라이브러리를 우선 사용한다 (저수준 `RPi.GPIO`는 꼭 필요할 때만)
+- 라즈베리파이 5는 자체 RP1 칩셋 특성상 기존 `RPi.GPIO`가 동작하지 않으므로 `gpiozero`와 `lgpio` 라이브러리를 필수로 사용한다. (PyPI 빌드 오류 방지를 위해 시스템 APT 패키지 및 `--system-site-packages` 가상환경 표준 준수)
 - Mock과 실기기는 `backend/iot/base.py`에 **이미 완성되어 있는** `DeviceProvider`
   인터페이스를 그대로 상속한다 — 메서드를 새로 정의하거나 이름을 바꾸지 않는다
   (`get_device_status` / `set_actuator_state` / `read_sensor_value` /

@@ -8,7 +8,7 @@
 - 백엔드: FastAPI (Python)
 - DB: MySQL/MariaDB (로컬 개발) → Supabase(PostgreSQL) (클라우드 배포 시 마이그레이션)
 - 프론트엔드: Next.js(TypeScript)
-- 하드웨어 제어: Python venv Mock(개발 전반부) → 라즈베리파이 5 + gpiozero(개발 후반부)
+- 하드웨어 제어: Python venv Mock(개발 전반부) → 라즈베리파이 5 + gpiozero/lgpio(개발 후반부)
 - 영상인식: YOLO/mediapipe (Windows PC + 웹캠)
 - 배포: Render(백엔드) / Vercel(프론트)
 - 버전관리: GitHub / 문서·협업: Notion
