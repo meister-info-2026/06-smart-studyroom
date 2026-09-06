@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>라즈베리파이 5 백엔드 연동 온보딩 프레젠테이션 | AI 스마트 학습 좌석</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-sub: #475569;
+      --meta-blue: #0064E0;
+      --meta-blue-light: #EBF4FF;
+      --meta-blue-hover: #0052B8;
+      --meta-blue-border: #BFDBFE;
+      --emerald-green: #059669;
+      --emerald-light: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --rose-red: #E11D48;
+      --rose-light: #FFF1F2;
+      --amber-orange: #D97706;
+      --amber-light: #FEF3C7;
+      --border-soft: #E2E8F0;
+      --border-hard: #CBD5E1;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Global Header */
+    header.meta-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      height: 64px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--meta-blue), #0082FB);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      box-shadow: 0 2px 4px rgba(0, 100, 224, 0.25);
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border-soft);
+      padding-left: 10px;
+      margin-left: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--meta-blue);
+      background: var(--meta-blue-light);
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--meta-blue-border);
+    }
+
+    .fs-btn {
+      background: transparent;
+      border: 1px solid var(--border-soft);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .fs-btn:hover {
+      background: #F1F5F9;
+      color: var(--text-main);
+      border-color: var(--border-hard);
+    }
+
+    /* Progress Bar */
+    .progress-track {
+      height: 3px;
+      width: 100%;
+      background: var(--border-soft);
+      position: sticky;
+      top: 64px;
+      z-index: 49;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 12.5%;
+      background: linear-gradient(90deg, var(--meta-blue), #00C6FF);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Main Deck Stage */
+    main.stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      position: relative;
+    }
+
+    /* Slide Card */
+    article.slide-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 44px 48px;
+      box-shadow: var(--shadow-xl);
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      min-height: 600px;
+    }
+
+    article.slide-card.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Slide Typography */
+    .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--meta-blue);
+      background: var(--meta-blue-light);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      width: fit-content;
+      margin-bottom: 14px;
+      border: 1px solid var(--meta-blue-border);
+    }
+
+    .slide-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .slide-desc {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* Slide 1 Cover Specific */
+    .cover-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      flex: 1;
+      padding: 30px 20px;
+    }
+
+    .cover-icon-box {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--meta-blue-light), #DBEAFE);
+      border: 2px solid var(--meta-blue-border);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--meta-blue);
+      margin-bottom: 24px;
+      box-shadow: 0 8px 16px rgba(0, 100, 224, 0.12);
+    }
+
+    .cover-title {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+
+    .cover-title span.highlight {
+      background: linear-gradient(120deg, var(--meta-blue), #00A3FF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-desc {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 720px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .cover-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .pill-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F1F5F9;
+      border: 1px solid var(--border-soft);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .pill-item svg {
+      color: var(--meta-blue);
+    }
+
+    /* Grids & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .info-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+
+    .info-card:hover {
+      border-color: var(--meta-blue-border);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .card-icon.blue {
+      background: var(--meta-blue-light);
+      color: var(--meta-blue);
+      border: 1px solid var(--meta-blue-border);
+    }
+
+    .card-icon.green {
+      background: var(--emerald-light);
+      color: var(--emerald-green);
+      border: 1px solid var(--emerald-border);
+    }
+
+    .card-icon.red {
+      background: var(--rose-light);
+      color: var(--rose-red);
+      border: 1px solid #FECDD3;
+    }
+
+    .card-icon.orange {
+      background: var(--amber-light);
+      color: var(--amber-orange);
+      border: 1px solid #FDE68A;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.55;
+    }
+
+    /* Comparison Box */
+    .compare-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 8px;
+    }
+
+    .compare-box {
+      border-radius: var(--radius-md);
+      padding: 24px;
+      border: 1px solid;
+    }
+
+    .compare-box.bad {
+      background: #FFFBFB;
+      border-color: #FECDD3;
+    }
+
+    .compare-box.good {
+      background: #F8FCF9;
+      border-color: var(--emerald-border);
+    }
+
+    .compare-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      margin-bottom: 14px;
+    }
+
+    .compare-box.bad .compare-badge {
+      background: #FFE4E6;
+      color: var(--rose-red);
+    }
+
+    .compare-box.good .compare-badge {
+      background: #D1FAE5;
+      color: var(--emerald-green);
+    }
+
+    /* Code Snippet Box */
+    .code-box {
+      background: #0F172A;
+      color: #E2E8F0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-top: 14px;
+      box-shadow: var(--shadow-md);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .code-header {
+      background: #1E293B;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .code-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .copy-btn {
+      background: #334155;
+      border: none;
+      color: #F1F5F9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.15s ease;
+    }
+
+    .copy-btn:hover {
+      background: #475569;
+    }
+
+    .copy-btn.copied {
+      background: var(--emerald-green);
+    }
+
+    pre.code-content {
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .code-kw { color: #F472B6; }
+    .code-str { color: #34D399; }
+    .code-fn { color: #60A5FA; }
+    .code-cm { color: #94A3B8; font-style: italic; }
+
+    /* Interactive Simulator on Slide 7 */
+    .sim-container {
+      background: #F8FAFC;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    .sim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .sim-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--emerald-green);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .sim-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .sim-btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sim-btn:hover {
+      background: #F1F5F9;
+      border-color: var(--border-hard);
+      transform: translateY(-1px);
+    }
+
+    .sim-btn.primary {
+      background: var(--meta-blue);
+      color: #FFFFFF;
+      border-color: var(--meta-blue);
+    }
+
+    .sim-btn.primary:hover {
+      background: var(--meta-blue-hover);
+    }
+
+    .sim-seat-preview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .seat-component-badge {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .seat-component-badge.act-on {
+      border-color: #38BDF8;
+      background: #F0F9FF;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+    }
+
+    .seat-component-badge.act-alert {
+      border-color: #F87171;
+      background: #FEF2F2;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.35);
+      animation: alertShake 0.4s ease infinite alternate;
+    }
+
+    @keyframes alertShake {
+      from { transform: translateX(-2px); }
+      to { transform: translateX(2px); }
+    }
+
+    .seat-comp-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .seat-comp-state {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .sim-console {
+      background: #090D16;
+      color: #38BDF8;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      min-height: 90px;
+      max-height: 120px;
+      overflow-y: auto;
+      border: 1px solid #1E293B;
+    }
+
+    /* Architecture Flow Diagram */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #F8FAFC;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .flow-node {
+      flex: 1;
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-node-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 6px;
+    }
+
+    .flow-node-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .flow-arrow {
+      color: var(--meta-blue);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      gap: 4px;
+    }
+
+    /* Bottom Nav Bar */
+    footer.nav-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-soft);
+      height: 72px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      bottom: 0;
+      z-index: 50;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .nav-hints {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .kbd-chip {
+      background: #F1F5F9;
+      border: 1px solid var(--border-hard);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-sub);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .nav-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border-hard);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-dot.active {
+      background: var(--meta-blue);
+      width: 24px;
+      border-radius: var(--radius-full);
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: #F1F5F9;
+      border-color: var(--border-hard);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nav-btn.primary {
+      background: var(--meta-blue);
+      color: #FFFFFF;
+      border-color: var(--meta-blue);
+    }
+
+    .nav-btn.primary:hover:not(:disabled) {
+      background: var(--meta-blue-hover);
+    }
+
+    /* Micro SVGs */
+    svg.icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    svg.icon-lg {
+      width: 32px;
+      height: 32px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      article.slide-card {
+        padding: 24px 20px;
+        min-height: auto;
+      }
+      .grid-2, .grid-3, .grid-4, .compare-container, .flow-diagram {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+      }
+      .cover-title {
+        font-size: 28px;
+      }
+      .brand-subtitle, .nav-hints {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Top Meta Header -->
+  <header class="meta-header">
+    <div class="brand-wrap">
+      <span class="brand-badge">Study Care Platform</span>
+      <div class="brand-title">
+        <span>AI 스마트 학습 좌석</span>
+        <span class="brand-subtitle">라즈베리파이 5 백엔드 연동 온보딩 가이드</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="slide-counter" id="slideIndicator">01 / 08</div>
+      <button class="fs-btn" id="btnFullscreen" title="전체화면 (F)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        <span>전체화면</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Progress Bar -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <!-- 2. Presentation Deck Stage -->
+  <main class="stage">
+    <div class="slide-viewport">
+
+      <!-- SLIDE 1: Cover -->
+      <article class="slide-card active" data-slide="0">
+        <div class="cover-container">
+          <div class="cover-icon-box">
+            <!-- Lucide Armchair / Presentation Icon -->
+            <svg class="icon-lg" viewBox="0 0 24 24">
+              <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/>
+              <path d="M3 16a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <path d="M4 18v3m16-3v3"/>
+            </svg>
+          </div>
+          <span class="slide-tag">Explain Like I'm Five (ELI5)</span>
+          <h1 class="cover-title">라즈베리파이 5 담당자를 위한 첫걸음<br><span class="highlight">"전선 없이 통신부터 1분에 끝내기!"</span></h1>
+          <p class="cover-desc">
+            코딩이나 하드웨어가 낯설어도 괜찮습니다. 빵판에 전선을 꽂고 납땜을 하기 전에,<br>
+            <strong>"백엔드와 대화하기(REST API)"</strong>부터 성공하면 2차 개발의 80%는 이미 완성됩니다!
+          </p>
+          <div class="cover-pills">
+            <div class="pill-item">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>전선·납땜 0개 (위험 제로)</span>
+            </div>
+            <div class="pill-item">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>1분 즉석 통신 확인</span>
+            </div>
+            <div class="pill-item">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>print() 출력으로 눈으로 확인</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SLIDE 2: Big Picture -->
+      <article class="slide-card" data-slide="1">
+        <span class="slide-tag">Step 1 · 전체 그림 이해</span>
+        <h2 class="slide-title">우리는 무엇을 만드나요? (학습 관리실과 스마트 의자의 대화)</h2>
+        <p class="slide-desc">
+          우리 시스템은 4명의 친구가 협력하는 하나의 거대한 유기체입니다. 라즈베리파이는 <strong>"학습 관리실(백엔드)의 지시를 성실히 따르는 똑똑한 공부 의자"</strong>입니다.
+        </p>
+
+        <div class="flow-diagram">
+          <div class="flow-node">
+            <div class="card-icon blue" style="margin: 0 auto 10px;"><svg class="icon" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+            <div class="flow-node-title">정면 웹캠 (Vision AI)</div>
+            <div class="flow-node-sub">착석 / 거북목 / 졸음 감지</div>
+          </div>
+          <div class="flow-arrow">
+            <span>이벤트 전송</span>
+            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+          <div class="flow-node" style="border-color: var(--meta-blue-border); background: #F8FAFC;">
+            <div class="card-icon green" style="margin: 0 auto 10px;"><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div>
+            <div class="flow-node-title">학습 관리실 (백엔드 + DB)</div>
+            <div class="flow-node-sub">규칙 판단 & 쪽지 기록</div>
+          </div>
+          <div class="flow-arrow">
+            <span>1초마다 확인</span>
+            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+          <div class="flow-node" style="border: 2px solid var(--meta-blue); background: var(--meta-blue-light);">
+            <div class="card-icon blue" style="margin: 0 auto 10px; background: #FFFFFF;"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
+            <div class="flow-node-title" style="color: var(--meta-blue);">라즈베리파이 5 (내 역할!)</div>
+            <div class="flow-node-sub">조명 켜기 & 진동 울리기</div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top: 24px;">
+          <div class="info-card">
+            <div class="card-title">💡 스탠드 조명 (rgb_led)</div>
+            <div class="card-desc">학생이 책상에 앉으면 은은하게 불을 켜주고, 30초 이상 자리를 비우면 절전 모드로 소등합니다.</div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">📳 등받이 진동 (vibration_motor_a)</div>
+            <div class="card-desc">학생이 고개를 너무 숙이거나 거북목 자세를 취하면 등받이에 드르륵 진동을 주어 바른 자세를 돕습니다.</div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">💤 방석 진동 (vibration_motor_b)</div>
+            <div class="card-desc">공부 중 눈이 3초 이상 감겨 졸음이 감지되면 방석 펄스 진동을 발생시켜 잠을 즉각 깨워줍니다.</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SLIDE 3: Concept GET & POST -->
+      <article class="slide-card" data-slide="2">
+        <span class="slide-tag">Step 2 · 통신 개념 원리</span>
+        <h2 class="slide-title">우체통을 열어보는 마법: 딱 2개 단어만 알면 끝!</h2>
+        <p class="slide-desc">
+          라즈베리파이가 백엔드와 통신할 때 사용하는 방식은 오직 2가지 행동뿐입니다. 우체통을 열어보는 <strong>GET</strong>과, 답장을 넣는 <strong>POST</strong>입니다.
+        </p>
+
+        <div class="grid-2">
+          <!-- GET Box -->
+          <div class="info-card" style="border-left: 4px solid var(--meta-blue);">
+            <div class="card-icon blue">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div class="card-title">1. GET desired-state ("우체통 쪽지 확인")</div>
+            <div class="card-desc" style="margin-bottom: 12px;">
+              라즈베리파이가 1~2초마다 백엔드 우체통을 확인하며 묻습니다.<br>
+              <strong>"관리실님, 혹시 등받이 진동 울리거나 조명 켤 일 있나요?"</strong>
+            </div>
+            <div class="code-box">
+              <div class="code-header">
+                <span class="code-title">백엔드가 보내주는 쪽지 (JSON 응답)</span>
+              </div>
+              <pre class="code-content">{
+  <span class="code-str">"device_id"</span>: <span class="code-str">"vibration_motor_a"</span>,
+  <span class="code-str">"desired_state"</span>: <span class="code-str">"on"</span>,      <span class="code-cm">// on: 켜라 / off: 꺼라</span>
+  <span class="code-str">"desired_value"</span>: <span class="code-str">"posture_warning"</span>
+}</pre>
+            </div>
+          </div>
+
+          <!-- POST Box -->
+          <div class="info-card" style="border-left: 4px solid var(--emerald-green);">
+            <div class="card-icon green">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="card-title">2. POST state ("심부름 완료 보고하기")</div>
+            <div class="card-desc" style="margin-bottom: 12px;">
+              쪽지대로 모터를 울리거나 조명을 켠 뒤, 백엔드에 완료 보고를 보냅니다.<br>
+              <strong>"관리실님! 지시하신 대로 등받이 진동 잘 울렸습니다!"</strong>
+            </div>
+            <div class="code-box">
+              <div class="code-header">
+                <span class="code-title">라즈베리파이가 보내는 보고서</span>
+              </div>
+              <pre class="code-content">{
+  <span class="code-str">"current_state"</span>: <span class="code-str">"on"</span>,     <span class="code-cm">// 실제 상태 보고</span>
+  <span class="code-str">"current_value"</span>: <span class="code-str">"posture_warning"</span>
+}</pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SLIDE 4: Secret Key -->
+      <article class="slide-card" data-slide="3">
+        <span class="slide-tag">Step 3 · 보안과 인증</span>
+        <h2 class="slide-title">둘만의 비밀 출입증: DEVICE_API_KEY 도장 찍기</h2>
+        <p class="slide-desc">
+          아무나 관리실 우체통을 열어보지 못하도록, 라즈베리파이는 통신할 때마다 <strong>둘만의 비밀 출입증 도장</strong>을 헤더에 찍어서 건넵니다.
+        </p>
+
+        <div class="grid-2" style="align-items: start;">
+          <div class="info-card">
+            <div class="card-icon orange">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            </div>
+            <div class="card-title">출입증의 이름: X-Device-Api-Key</div>
+            <div class="card-desc">
+              파이썬 코드에서 요청을 보낼 때 딱 한 줄만 추가하면 됩니다:<br>
+              <code>headers = {"X-Device-Api-Key": "STUDY_ROOM_2026_09_05_v1_0_0"}</code><br><br>
+              이 키는 <code>pi/.env</code> 파일과 <code>backend/.env</code> 파일에 <strong>글자 하나 틀리지 않고 똑같이</strong> 적혀 있어야 합니다.
+            </div>
+          </div>
+
+          <div class="compare-container" style="margin-top: 0; grid-template-columns: 1fr;">
+            <div class="compare-box bad">
+              <div class="compare-badge">⚠️ 절대 하지 마세요!</div>
+              <div class="card-desc" style="font-size: 13px;">
+                • API 키를 깃허브 커밋이나 공개 단톡방에 올리지 마세요.<br>
+                • <code>.env</code> 파일에만 적어두면 파이썬이 알아서 안전하게 읽어옵니다.
+              </div>
+            </div>
+            <div class="compare-box good" style="margin-top: 14px;">
+              <div class="compare-badge">✅ 초보자 안심 규칙!</div>
+              <div class="card-desc" style="font-size: 13px;">
+                이미 팀 프로젝트의 <code>pi/.env</code> 에 백엔드와 일치하는 키가 채워져 있습니다! 여러분은 코드를 실행만 하면 됩니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SLIDE 5: Philosophy No-Hardware First -->
+      <article class="slide-card" data-slide="4">
+        <span class="slide-tag">Step 4 · ELI5 개발 철학</span>
+        <h2 class="slide-title">빵판과 모터는 잠시 안녕! 화면 글자(print)로 모터 돌리기</h2>
+        <p class="slide-desc">
+          초보자가 가장 많이 겪는 멘붕: <em>"모터가 안 도는데... 전선이 덜 꽂힌 건지, 파이썬 코드가 틀린 건지, 백엔드가 안 보낸 건지 알 수가 없다!"</em>
+        </p>
+
+        <div class="compare-container">
+          <div class="compare-box bad">
+            <div class="compare-badge">❌ 구식 방식: 전선부터 꽂기</div>
+            <h4 style="margin-bottom: 8px; font-size: 16px;">원인 불명의 늪</h4>
+            <p style="font-size: 14px; color: var(--text-sub); line-height: 1.6;">
+              모터 선 꽂고, 저항 찾고, GPIO 번호 헷갈리다가 합선 나거나 타버림. 문제가 생겼을 때 하드웨어 탓인지 소프트웨어 탓인지 분간 불가!
+            </p>
+          </div>
+
+          <div class="compare-box good">
+            <div class="compare-badge">✅ Anthropic ELI5 방식: Mock First</div>
+            <h4 style="margin-bottom: 8px; font-size: 16px;">모든 물리적 동작을 화면 글자로!</h4>
+            <p style="font-size: 14px; color: var(--text-sub); line-height: 1.6;">
+              전선 하나도 꽂지 마세요! 백엔드에서 "등받이 진동 켜!" 신호가 오면 터미널에 <code>print("📳 [등받이 진동 드르륵! 거북목 경고]")</code> 로 먼저 확인합니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top: 24px;">
+          <div class="info-card">
+            <div class="card-title">1단계 (오늘 미션)</div>
+            <div class="card-desc">화면 콘솔 <code>print()</code> 로 백엔드 신호 주고받기 완벽 성공!</div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">2단계 (다음 주)</div>
+            <div class="card-desc">검증된 <code>print()</code> 자리에 <code>motor.on()</code> 단 한 줄로 교체하기!</div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">결과</div>
+            <div class="card-desc">코드 오류가 없음을 100% 확신한 상태에서 전선만 꽂으면 즉시 완성!</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- SLIDE 6: Hands-on 1 (01_ping_backend.py) -->
+      <article class="slide-card" data-slide="5">
+        <span class="slide-tag">Hands-on 1 · 실습 1단계</span>
+        <h2 class="slide-title">1분 즉석 실행: 백엔드에 첫 인사 건네기</h2>
+        <p class="slide-desc">
+          백엔드 관리실 컴퓨터가 문을 열었는지 확인하는 가장 쉽고 안전한 코드입니다. 터미널을 열고 아래 명령어를 입력해 보세요.
+        </p>
+
+        <div class="code-box">
+          <div class="code-header">
+            <span class="code-title">
+              <svg class="icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              터미널 실행 명령어
+            </span>
+            <button class="copy-btn" onclick="copySnippet('cmd1', this)">
+              <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>복사</span>
+            </button>
+          </div>
+          <pre class="code-content" id="cmd1">cd pi
+python 01_ping_backend.py</pre>
+        </div>
+
+        <div class="code-box" style="background: #090D16; border: 1px solid #1E293B;">
+          <div class="code-header" style="background: #0F172A;">
+            <span class="code-title" style="color: #34D399;">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              성공 시 터미널에 뜨는 기분 좋은 화면
+            </span>
+          </div>
+          <pre class="code-content" style="color: #E2E8F0;"><span style="color:#60A5FA;">🎉 [성공 200 OK]</span> 백엔드 관리실과 통신선이 완벽하게 연결되었습니다!
+📋 관리실 장부에 등록된 스마트 좌석 부품 개수: 6개
+
+[현재 등록된 스마트 좌석 부품 목록]
+  - ID: rgb_led              | 이름: RGB LED 바(스탠드 조명)    | 종류: led
+  - ID: vibration_motor_a    | 이름: 소형 진동 모터 A(등받이 매립) | 종류: vibrator
+  - ID: vibration_motor_b    | 이름: 소형 진동 모터 B(방석 매립)   | 종류: vibrator
+  - ID: relay_power          | 이름: 릴레이/MOSFET 모듈       | 종류: relay
+
+✨ 축하합니다! 통신 기초가 확인되었으니 2단계로 넘어가세요!</pre>
+        </div>
+      </article>
+
+      <!-- SLIDE 7: Hands-on 2 & Interactive Simulator -->
+      <article class="slide-card" data-slide="6">
+        <span class="slide-tag">Hands-on 2 · 실시간 시뮬레이터</span>
+        <h2 class="slide-title">스마트 학습 좌석 가상 제어 데몬 (Mock 모드)</h2>
+        <p class="slide-desc">
+          <code>02_seat_daemon_mock.py</code> 는 백엔드를 계속 폴링하며 신호를 기다립니다. 아래 가상 시뮬레이터 버튼을 눌러 동작 원리를 직접 체험해 보세요!
+        </p>
+
+        <!-- Interactive Live Simulator -->
+        <div class="sim-container">
+          <div class="sim-header">
+            <div class="sim-status">
+              <span class="status-dot"></span>
+              <span>라즈베리파이 가상 데몬 활성화 중 (2.5초 폴링 루프)</span>
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted);">아래 버튼을 눌러 웹 대시보드 조작을 흉내내 보세요!</span>
+          </div>
+
+          <div class="sim-controls">
+            <button class="sim-btn primary" onclick="triggerSimEvent('seat_on')">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>학생 착석 (스탠드 조명 점등)</span>
+            </button>
+            <button class="sim-btn" onclick="triggerSimEvent('posture_alert')">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>거북목 감지 (등받이 진동)</span>
+            </button>
+            <button class="sim-btn" onclick="triggerSimEvent('drowsy_alert')">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <span>졸음 감지 (방석 펄스 진동)</span>
+            </button>
+            <button class="sim-btn" onclick="triggerSimEvent('seat_off')">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span>자리 비움 (절전 소등)</span>
+            </button>
+          </div>
+
+          <div class="sim-seat-preview">
+            <div class="seat-component-badge" id="badgeLed">
+              <div class="seat-comp-name">💡 스탠드 조명 (rgb_led)</div>
+              <div class="seat-comp-state" id="stateLed">상태: OFF (소등)</div>
+            </div>
+            <div class="seat-component-badge" id="badgeMotorA">
+              <div class="seat-comp-name">📳 등받이 모터 (motor_a)</div>
+              <div class="seat-comp-state" id="stateMotorA">상태: OFF (대기)</div>
+            </div>
+            <div class="seat-component-badge" id="badgeMotorB">
+              <div class="seat-comp-name">💤 방석 모터 (motor_b)</div>
+              <div class="seat-comp-state" id="stateMotorB">상태: OFF (대기)</div>
+            </div>
+          </div>
+
+          <div class="sim-console" id="simConsole">
+            [가상 터미널 준비 완료] 위 버튼을 클릭하면 라즈베리파이의 실시간 폴링 및 print() 반응을 볼 수 있습니다.
+          </div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header">
+            <span class="code-title">라즈베리파이에서 실제 실행하기</span>
+            <button class="copy-btn" onclick="copySnippet('cmd2', this)">
+              <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>복사</span>
+            </button>
+          </div>
+          <pre class="code-content" id="cmd2">cd pi
+python 02_seat_daemon_mock.py</pre>
+        </div>
+      </article>
+
+      <!-- SLIDE 8: Blameless SOS Guide -->
+      <article class="slide-card" data-slide="7">
+        <span class="slide-tag">Troubleshooting · 자책 없는 SOS 처방전</span>
+        <h2 class="slide-title">빨간 글씨가 떠도 당황 금지! 3초 자가진단 처방전</h2>
+        <p class="slide-desc">
+          에러 메시지는 학생의 실수가 아닙니다! 네트워크 환경이 맞지 않을 때 발생하는 자연스러운 현상입니다. 3가지 증상만 확인하세요.
+        </p>
+
+        <div class="grid-3">
+          <div class="info-card" style="border-top: 4px solid var(--rose-red);">
+            <div class="card-icon red">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </div>
+            <div class="card-title">1. Connection Refused</div>
+            <div class="card-desc">
+              <strong>"백엔드 관리실 문이 닫혀 있어요!"</strong><br><br>
+              <strong>처방:</strong><br>
+              ① 백엔드 친구가 uvicorn 서버를 켰는지 확인<br>
+              ② 두 기기가 동일한 Wi-Fi(공유기)인지 확인<br>
+              ③ <code>pi/.env</code> 에 백엔드 PC의 IP가 맞는지 확인
+            </div>
+          </div>
+
+          <div class="info-card" style="border-top: 4px solid var(--amber-orange);">
+            <div class="card-icon orange">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="card-title">2. 401 Unauthorized</div>
+            <div class="card-desc">
+              <strong>"출입증 비밀번호가 틀렸어요!"</strong><br><br>
+              <strong>처방:</strong><br>
+              ① <code>pi/.env</code> 파일 열기<br>
+              ② <code>DEVICE_API_KEY</code> 가 <code>STUDY_ROOM_2026_09_05_v1_0_0</code> 와 정확히 일치하는지 확인 (오탈자/공백 주의)
+            </div>
+          </div>
+
+          <div class="info-card" style="border-top: 4px solid var(--meta-blue);">
+            <div class="card-icon blue">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div class="card-title">3. 404 Not Found</div>
+            <div class="card-desc">
+              <strong>"장부에 없는 부품 이름을 물어봤어요!"</strong><br><br>
+              <strong>처방:</strong><br>
+              디바이스 ID 철자를 확인하세요:<br>
+              • 조명: <code>rgb_led</code><br>
+              • 등받이: <code>vibration_motor_a</code><br>
+              • 방석: <code>vibration_motor_b</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card" style="margin-top: 24px; background: var(--emerald-light); border-color: var(--emerald-border);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="card-icon green" style="margin: 0; background: #FFFFFF;"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div>
+              <div class="card-title" style="color: var(--emerald-green); margin: 0;">이제 여러분은 2차 개발을 시작할 모든 준비를 마쳤습니다!</div>
+              <div class="card-desc" style="color: #065F46; font-size: 13px; margin-top: 4px;">
+                통신이 눈으로 확인되면, 백엔드·프론트엔드·비전 팀원들에게 <strong>"라즈베리파이 통신 연동 완료!"</strong> 라고 자랑스럽게 외쳐주세요!
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- 3. Bottom Global Navigation -->
+  <footer class="nav-footer">
+    <div class="nav-hints">
+      <span>키보드 이동:</span>
+      <span class="kbd-chip">←</span>
+      <span class="kbd-chip">→</span>
+      <span class="kbd-chip">Space</span>
+    </div>
+
+    <div class="nav-dots" id="dotNav">
+      <!-- Dots injected dynamically -->
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" id="btnPrev" disabled>
+        <svg class="icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>이전</span>
+      </button>
+      <button class="nav-btn primary" id="btnNext">
+        <span>다음</span>
+        <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- Interactive Slide Controller JS -->
+  <script>
+    (function () {
+      const slides = document.querySelectorAll('.slide-card');
+      const totalSlides = slides.length;
+      let currentSlide = 0;
+
+      const indicator = document.getElementById('slideIndicator');
+      const progressFill = document.getElementById('progressFill');
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const dotNav = document.getElementById('dotNav');
+      const btnFullscreen = document.getElementById('btnFullscreen');
+
+      // 1. Generate Dot Navigation
+      dotNav.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.title = (i + 1) + '번 슬라이드로 이동';
+        dot.addEventListener('click', () => goToSlide(i));
+        dotNav.appendChild(dot);
+      }
+      const dots = document.querySelectorAll('.nav-dot');
+
+      function updateSlideUI() {
+        slides.forEach((s, idx) => {
+          if (idx === currentSlide) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+
+        dots.forEach((d, idx) => {
+          if (idx === currentSlide) {
+            d.classList.add('active');
+          } else {
+            d.classList.remove('active');
+          }
+        });
+
+        const curText = String(currentSlide + 1).padStart(2, '0');
+        const totText = String(totalSlides).padStart(2, '0');
+        indicator.textContent = `${curText} / ${totText}`;
+
+        const progressPct = ((currentSlide + 1) / totalSlides) * 100;
+        progressFill.style.width = `${progressPct}%`;
+
+        btnPrev.disabled = currentSlide === 0;
+        if (currentSlide === totalSlides - 1) {
+          btnNext.innerHTML = '<span>처음으로</span><svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>';
+        } else {
+          btnNext.innerHTML = '<span>다음</span><svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        }
+      }
+
+      function goToSlide(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= totalSlides) idx = 0;
+        currentSlide = idx;
+        updateSlideUI();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      btnPrev.addEventListener('click', () => {
+        if (currentSlide > 0) goToSlide(currentSlide - 1);
+      });
+
+      btnNext.addEventListener('click', () => {
+        if (currentSlide < totalSlides - 1) {
+          goToSlide(currentSlide + 1);
+        } else {
+          goToSlide(0);
+        }
+      });
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          btnNext.click();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          btnPrev.click();
+        } else if (e.key === 'f' || e.key === 'F') {
+          toggleFullscreen();
+        }
+      });
+
+      // Fullscreen
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+      btnFullscreen.addEventListener('click', toggleFullscreen);
+
+      // Clipboard helper
+      window.copySnippet = function (elemId, btn) {
+        const pre = document.getElementById(elemId);
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+          const originalHTML = btn.innerHTML;
+          btn.classList.add('copied');
+          btn.innerHTML = '<svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>복사됨!</span>';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = originalHTML;
+          }, 2000);
+        });
+      };
+
+      // Slide 7 Interactive Simulator
+      window.triggerSimEvent = function (action) {
+        const con = document.getElementById('simConsole');
+        const bLed = document.getElementById('badgeLed');
+        const sLed = document.getElementById('stateLed');
+        const bMotA = document.getElementById('badgeMotorA');
+        const sMotA = document.getElementById('stateMotorA');
+        const bMotB = document.getElementById('badgeMotorB');
+        const sMotB = document.getElementById('stateMotorB');
+
+        const now = new Date().toLocaleTimeString('ko-KR', { hour12: false });
+
+        if (action === 'seat_on') {
+          bLed.className = 'seat-component-badge act-on';
+          sLed.textContent = '상태: ON (밝기 80%)';
+          bMotA.className = 'seat-component-badge';
+          sMotA.textContent = '상태: OFF (대기)';
+          bMotB.className = 'seat-component-badge';
+          sMotB.textContent = '상태: OFF (대기)';
+
+          con.innerHTML = `[${now}] 🔔 [rgb_led] 상태 변경 지시 감지! [off ➔ on]<br>` +
+            `&nbsp;&nbsp;✨ [LED 점등] 스탠드 조명이 켜졌습니다! (주백색 4500K, 밝기 80%)<br>` +
+            `&nbsp;&nbsp;✅ [POST 완료] 백엔드에 'on' 반영 완료 보고 완료!`;
+        } else if (action === 'posture_alert') {
+          bMotA.className = 'seat-component-badge act-alert';
+          sMotA.textContent = '상태: ALERT (진동 중!)';
+
+          con.innerHTML = `[${now}] 🔔 [vibration_motor_a] 상태 변경 지시 감지! [off ➔ on]<br>` +
+            `&nbsp;&nbsp;⚠️ <span style="color:#F87171;">[등받이 진동 발생!]</span> 드르륵~ 드르륵! (거북목 교정 알림)<br>` +
+            `&nbsp;&nbsp;✅ [POST 완료] 백엔드에 'on' 반영 보고 완료! 대시보드 알림 점등.`;
+        } else if (action === 'drowsy_alert') {
+          bMotB.className = 'seat-component-badge act-alert';
+          sMotB.textContent = '상태: ALERT (펄스 진동!)';
+
+          con.innerHTML = `[${now}] 🔔 [vibration_motor_b] 상태 변경 지시 감지! [off ➔ alert]<br>` +
+            `&nbsp;&nbsp;🚨 <span style="color:#F87171;">[방석 진동 쿵쿵쿵!!]</span> 펄스 진동 발생! (눈 감김 3초 초과 - 졸음 깨우기!)<br>` +
+            `&nbsp;&nbsp;✅ [POST 완료] 백엔드에 'alert' 보고 완료! 대시보드 졸음 경보 점등.`;
+        } else if (action === 'seat_off') {
+          bLed.className = 'seat-component-badge';
+          sLed.textContent = '상태: OFF (절전)';
+          bMotA.className = 'seat-component-badge';
+          sMotA.textContent = '상태: OFF (대기)';
+          bMotB.className = 'seat-component-badge';
+          sMotB.textContent = '상태: OFF (대기)';
+
+          con.innerHTML = `[${now}] 🔔 [rgb_led] 상태 변경 지시 감지! [on ➔ off]<br>` +
+            `&nbsp;&nbsp;🌑 [LED 소등] 30초 이상 미착석 감지 ➔ 절전 모드로 조명을 끕니다.<br>` +
+            `&nbsp;&nbsp;✅ [POST 완료] 백엔드에 'off' 반영 완료 보고.`;
+        }
+      };
+
+      // Initialize
+      updateSlideUI();
+    })();
+  </script>
+</body>
+</html>
