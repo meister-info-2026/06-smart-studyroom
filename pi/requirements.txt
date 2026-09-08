@@ -1,12 +1,7 @@
 # Raspberry Pi 5 Client Dependencies
 # ==============================================================================
-# [라즈베리파이 5 필수 주의사항]
-# 라즈베리파이 5(RP1 칩셋) 환경에서 PyPI의 lgpio를 직접 pip install하면
-# C 소스 컴파일 에러가 발생합니다.
-#
-# 따라서 gpiozero와 lgpio는 라즈베리파이 OS 기본 APT 패키지로 설치하고,
-# 가상환경 생성 시 --system-site-packages 옵션을 적용해야 합니다:
-#
+# [Raspberry Pi 5 Note]
+# On Raspberry Pi 5 (RP1), install gpiozero and lgpio via APT:
 #   sudo apt update
 #   sudo apt install -y python3-gpiozero python3-lgpio
 #   python3 -m venv --system-site-packages venv

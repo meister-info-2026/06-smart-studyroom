@@ -30,7 +30,11 @@ if sys.platform == "win32":
 
 # 1. 환경변수 불러오기
 load_dotenv()
-BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000").strip().rstrip("/")
+if BACKEND_URL.startswith("http:/") and not BACKEND_URL.startswith("http://"):
+    BACKEND_URL = "http://" + BACKEND_URL[6:]
+elif BACKEND_URL.startswith("https:/") and not BACKEND_URL.startswith("https://"):
+    BACKEND_URL = "https://" + BACKEND_URL[7:]
 DEVICE_API_KEY = os.getenv("DEVICE_API_KEY", "STUDY_ROOM_2026_09_05_v1_0_0")
 
 HEADERS = {

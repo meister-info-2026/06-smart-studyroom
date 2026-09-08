@@ -24,6 +24,8 @@ dist/
 .env.production.local
 *.pem
 *.key
+!.env.example
+!.env*.example
 
 # OS / IDE
 .DS_Store

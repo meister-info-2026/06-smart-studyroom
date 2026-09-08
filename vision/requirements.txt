@@ -1,32 +1,23 @@
-# ==============================================================================
-# Vision Client Requirements (초경량 ONNX Runtime 엔진 - PyTorch 불필요)
+# Vision Client Requirements (Lightweight ONNX Runtime Engine)
 #
-# 가상환경 생성 (5초 만에 설치 완료, Python 3.10 ~ 3.14 전 버전 호환):
+# Setup virtual environment (Python 3.10 - 3.12 recommended):
 #   py -3.12 -m venv venv
 #   .\venv\Scripts\Activate.ps1
-#   $env:PYTHONUTF8=1
 #   pip install -r requirements.txt
-#
-# 장점:
-#   1. 거대한 PyTorch(200MB+) 및 Ultralytics 의존성을 완전히 제거
-#   2. ONNX Runtime(CPU 최적화) 기반 초고속 추론 (12.8MB yolov8n.onnx 기본 탑재)
-#   3. Windows C++ 컴파일러(Visual Studio) 불필요, DLL 로드 에러(WinError 1114) 제로
-#   4. Pillow 탑재로 웹캠 화면 한글 텍스트 깨짐 방지
-# ==============================================================================
 
-# 초경량 AI 추론 엔진 (PyTorch 대체)
+# Lightweight AI Inference Engine
 onnxruntime>=1.18.0
 
-# 영상 처리 및 컴퓨터 비전
+# Computer Vision & Image Processing
 opencv-python>=4.9.0
 numpy<2
 
-# 웹캠 한글 텍스트 오버레이 지원
+# Image Processing & Text Rendering
 pillow>=10.0.0
 
-# 수치 연산 및 기하학 분석 (자세/눈 추적 보조)
+# Scientific & Geometric Analysis
 scipy>=1.12.0
 
-# 백엔드 통신 및 환경변수
+# Backend Communication & Environment Variables
 requests>=2.28.0
 python-dotenv>=1.0.0
